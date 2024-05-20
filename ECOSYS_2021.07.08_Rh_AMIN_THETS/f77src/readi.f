@@ -144,7 +144,8 @@ C     ASPX=N,E,S,W aspect (o)
 C     SL1,SL2=EW,NS slope (o)
 C     DPTHSX=initial snowpack depth
 C
-50    READ(7,*,END=20)NH1,NV1,NH2,NV2,ASPX,SL0,SLX,DPTHSX
+C     Adding tile drainage input in TOPOGRAPHY file by zewei
+50    READ(7,*,END=20)NH1,NV1,NH2,NV2,ASPX,SL0,SLX,DPTHSX,TILEDEPX,TILEDENX,TILECOX
       READ(7,52)DATA(7)
 52    FORMAT(A16)
 C
@@ -159,6 +160,10 @@ C
       ASP(NY,NX)=ASPX
       SL(NY,NX)=SL0
       DPTHS(NY,NX)=DPTHSX
+C     Adding tile drainage input in TOPOGRAPHY file by zma
+      TILEDEP(NY,NX)=TILEDEPX
+      TILEDEN(NY,NX)=TILEDENX
+      TILECO(NY,NX)=TILECOX
 C
 C     CONVERT ASPECT TO GEOMETRIC FORMAT
 C

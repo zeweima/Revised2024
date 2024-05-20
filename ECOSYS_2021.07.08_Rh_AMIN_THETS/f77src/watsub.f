@@ -3763,12 +3763,25 @@ C     PSISM1,PSISE=soil,air entry matric potential
 C     DTBLYX=equilibrium water potential with artificial water table
 C     IFLGD=micropore discharge flag to artificial water table
 C
-      IF(IDTBL(NY,NX).GE.3.AND.DPTH(L,NY,NX).LT.DTBLY(NY,NX))THEN
-      IF(PSISM1(L,NY,NX).GT.0.0098*(DPTH(L,NY,NX)-DTBLY(NY,NX)))THEN
+
+C     Changed to meet the need for tile drainage by zewei
+C      IF(IDTBL(NY,NX).GE.3.AND.DPTH(L,NY,NX).LT.DTBLY(NY,NX))THEN
+
+      IF(IDTBL(NY,NX).GE.3.AND.DPTH(L,NY,NX).LT.TILEDEP(NY,NX))THEN
+
+C     Changed to meet the need for tile drainage by zewei
+C      IF(PSISM1(L,NY,NX).GT.0.0098*(DPTH(L,NY,NX)-DTBLY(NY,NX)))THEN
+
+      IF(PSISM1(L,NY,NX).GT.0.0098*(DPTH(L,NY,NX)-TILEDEP(NY,NX)))THEN
       IFLGD=0
       IF(L.LT.NL(NY,NX))THEN
       DO 9568 LL=L+1,NL(NY,NX)
-      DTBLYX=DTBLY(NY,NX)+PSISE(LL,NY,NX)/0.0098
+
+C     Changed to meet the need for tile drainage by zewei
+C      DTBLYX=DTBLY(NY,NX)+PSISE(LL,NY,NX)/0.0098
+C      IF(DPTH(LL,NY,NX).LT.DTBLYX)THEN
+C      IF((PSISM1(LL,NY,NX).LE.0.0098*(DPTH(LL,NY,NX)-DTBLYX) 
+      DTBLYX=TILEDEP(NY,NX)+PSISE(LL,NY,NX)/0.0098
       IF(DPTH(LL,NY,NX).LT.DTBLYX)THEN
       IF((PSISM1(LL,NY,NX).LE.0.0098*(DPTH(LL,NY,NX)-DTBLYX) 
      2.AND.L.NE.NL(NY,NX)).OR.DPTH(LL,NY,NX).GT.DPTHA(NY,NX))THEN
@@ -3790,19 +3803,24 @@ C     VOLAH1,VOLWH1,VOLIH1=macropore volume,water,ice content
 C     CDPTH=depth to layer bottom
 C     DLYR=layer thickness
 C     IFLGDH=macropore discharge flag to artificial water table
-C
+C     DTBLY
       IF(VOLAH1(L,NY,NX).GT.ZEROS2(NY,NX))THEN
       DPTHH=CDPTH(L,NY,NX)-(VOLWH1(L,NY,NX)+VOLIH1(L,NY,NX))
      2/VOLAH1(L,NY,NX)*DLYR(3,L,NY,NX)
       ELSE
       DPTHH=CDPTH(L,NY,NX)
       ENDIF
-      IF(IDTBL(NY,NX).GE.3.AND.DPTHH.LT.DTBLY(NY,NX)
+
+C     Changed to meet the need for tile drainage by zewei
+C      IF(IDTBL(NY,NX).GE.3.AND.DPTHH.LT.DTBLY(NY,NX)
+      IF(IDTBL(NY,NX).GE.3.AND.DPTHH.LT.TILEDEP(NY,NX)
      2.AND.VOLWH1(L,NY,NX).GT.ZEROS2(NY,NX))THEN
       IFLGDH=0
       IF(L.LT.NL(NY,NX))THEN
       DO 9569 LL=L+1,NL(NY,NX)
-      IF(DPTH(LL,NY,NX).LT.DTBLY(NY,NX))THEN
+C     Changed to meet the need for tile drainage by zewei
+C      IF(DPTH(LL,NY,NX).LT.DTBLY(NY,NX))THEN
+      IF(DPTH(LL,NY,NX).LT.TILEDEP(NY,NX))THEN
       IF(VOLAH1(LL,NY,NX).LE.ZEROS(NY,NX))THEN
       IFLGDH=1
       ENDIF
@@ -4206,12 +4224,23 @@ C
       IF(IFLGD.EQ.0.AND.RCHGFT.NE.0.0)THEN
       PSISWD=XN*0.005*SLOPE(N,N2,N1)*DLYR(N,N3,N2,N1)
      2*(1.0-DTBLG(N2,N1))
+
+C     Changed to meet the need for tile drainage by zewei 
+C      PSISWT=AMIN1(0.0,-PSISA1(N3,N2,N1)-0.03*PSISO(N3,N2,N1) 
+C     2+0.0098*(DPTH(N3,N2,N1)-DTBLY(N2,N1))
+C     3-0.0098*AMAX1(0.0,DPTH(N3,N2,N1)-DPTHT(N2,N1)))
       PSISWT=AMIN1(0.0,-PSISA1(N3,N2,N1)-0.03*PSISO(N3,N2,N1) 
-     2+0.0098*(DPTH(N3,N2,N1)-DTBLY(N2,N1))
+     2+0.0098*(DPTH(N3,N2,N1)-TILEDEP(N2,N1))
      3-0.0098*AMAX1(0.0,DPTH(N3,N2,N1)-DPTHT(N2,N1)))
-      IF(PSISWT.LT.0.0)PSISWT=PSISWT-PSISWD 
+
+      IF(PSISWT.LT.0.0)PSISWT=PSISWT-PSISWD
+
+C     Changed to meet the need for tile drainage by zewei    
+C      FLWT=PSISWT*HCND(N,1,N3,N2,N1)*AREA(N,N3,N2,N1)
+C     2*(1.0-AREAUD(N3,N2,N1))/(RCHGFU+1.0)*RCHGFT*XNPH 
       FLWT=PSISWT*HCND(N,1,N3,N2,N1)*AREA(N,N3,N2,N1)
-     2*(1.0-AREAUD(N3,N2,N1))/(RCHGFU+1.0)*RCHGFT*XNPH 
+     2*(1.0-AREAUD(N3,N2,N1))/(TILEDEN(N2,N1)+1.0)*TILECO(N2,N1)*XNPH 
+
       FLWL(N,M6,M5,M4)=FLWL(N,M6,M5,M4)+XN*FLWT 
       FLWLX(N,M6,M5,M4)=FLWLX(N,M6,M5,M4)+XN*FLWT 
       HFLWL(N,M6,M5,M4)=HFLWL(N,M6,M5,M4)+4.19*TK1(N3,N2,N1)*XN*FLWT
