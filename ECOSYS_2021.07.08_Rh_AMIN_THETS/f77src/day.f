@@ -94,6 +94,9 @@ C
       URUN(NY,NX)=0.0
       USEDOU(NY,NX)=0.0
       UVOLO(NY,NX)=0.0
+C     Changes to add tile flow outputs by zma
+      UVOLY(NY,NX)=0.0
+
       UIONOU(NY,NX)=0.0
       UFERTN(NY,NX)=0.0
       UXZSN(NY,NX)=0.0

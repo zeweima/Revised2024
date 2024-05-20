@@ -327,6 +327,8 @@ C
       FLW(N,L,NY,NX)=0.0
       FLWX(N,L,NY,NX)=0.0
       FLWH(N,L,NY,NX)=0.0
+      FLWY(N,L,NY,NX)=0.0
+      FLWHY(N,L,NY,NX)=0.0
       HFLW(N,L,NY,NX)=0.0
       XN4FLB(N,L,NY,NX)=0.0
       XN3FLB(N,L,NY,NX)=0.0

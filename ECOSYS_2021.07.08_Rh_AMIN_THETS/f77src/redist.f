@@ -851,6 +851,10 @@ C
 C     FLW,FLWH,HFLW=micropore,macropore,heat flux through lateral and lower boundaries from watsub.f
 C     VOLWOU,HEATOU=cumulative water, heat loss through lateral and lower boundaries
 C     UVOLO,HVOLO=cumulative,hourly water loss through lateral and lower boundaries
+C     FLWY,FLWHY=micropore,macropore discharge through lateral and
+C        lower boundaries from artificial drainage from watsub.f
+C     UVOLY=water loss through lateral and lower boundaries from
+C        artificial drainage 
 C
       IF(NCN(NY,NX).NE.3.OR.N.EQ.3)THEN
       HEATOU=HEATOU-XN*HFLW(N,N6,N5,N4)
@@ -859,6 +863,8 @@ C
       VOLWOU=VOLWOU-WO
       HVOLO(N2,N1)=HVOLO(N2,N1)-WO
       UVOLO(N2,N1)=UVOLO(N2,N1)-WO
+      WY=XN*(FLWY(N,N6,N5,N4)+FLWHY(N,N6,N5,N4))
+      UVOLY(N2,N1)=UVOLY(N2,N1)-WY
 C     IF((I/10)*10.EQ.I.AND.J.EQ.15)THEN
 C     WRITE(*,3488)'UVOLO',I,J,N6,N5,N4,N,XN,WO
 C    2,UVOLO(NY,NX),FLW(N,N6,N5,N4),FLWH(N,N6,N5,N4)
